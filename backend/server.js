@@ -18,7 +18,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve frontend static assets
-app.use(express.static(path.join(__dirname, 'public')));
+const frontendPath = path.join(__dirname, '..', 'frontend');
+app.use(express.static(frontendPath));
 
 // API Routes
 app.use('/api/employees', employeeRoutes);
@@ -62,7 +63,7 @@ app.use((err, req, res, next) => {
 
 // Fallback handler for single-page routing
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // Start Server

@@ -53,7 +53,7 @@ A full-featured, enterprise-grade Employee Management Web Application designed f
 
 1. Open your terminal in the project directory:
    ```bash
-   cd "c:\Users\Jigar\Downloads\Weintern Week-2 Task-2"
+   cd backend
    ```
 
 2. Dependencies are already installed (`express`, `cors`, `dotenv`, `mongoose`). If needed, run:
@@ -61,15 +61,20 @@ A full-featured, enterprise-grade Employee Management Web Application designed f
    npm install
    ```
 
-3. (Optional) Configure your MongoDB connection string in `.env`:
+3. (Optional) Configure your MongoDB connection string in `backend/.env`:
    ```env
    PORT=5000
    MONGODB_URI=mongodb://127.0.0.1:27017/employee_management
    NODE_ENV=development
    ```
 
-4. Start the server:
+4. Start the server (either from root or inside `backend/`):
    ```bash
+   # From root:
+   npm start
+
+   # Or from backend/:
+   cd backend
    npm start
    ```
 
