@@ -1,0 +1,22 @@
+$kind: http-request
+description: Retrieves employees sorted by salary in descending order.
+url: "{{baseUrl}}?sortBy=salary&order=desc"
+method: GET
+queryParams:
+  sortBy: salary
+  order: desc
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Salaries are sorted in descending order", function () {
+          var jsonData = pm.response.json();
+          for (var i = 0; i < jsonData.data.length - 1; i++) {
+              pm.expect(jsonData.data[i].salary).to.be.at.least(jsonData.data[i+1].salary);
+          }
+      });
+    language: text/javascript
+order: 6000

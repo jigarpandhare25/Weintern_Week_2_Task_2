@@ -1,0 +1,18 @@
+$kind: http-request
+description: Deletes the employee created in Step 1, completing the full CRUD lifecycle.
+url: "{{baseUrl}}/{{createdEmployeeId}}"
+method: DELETE
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Employee successfully deleted", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.success).to.eql(true);
+          pm.expect(jsonData.message).to.eql("Employee deleted successfully");
+      });
+    language: text/javascript
+order: 10000

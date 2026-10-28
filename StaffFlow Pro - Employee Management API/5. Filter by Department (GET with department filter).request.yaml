@@ -1,0 +1,21 @@
+$kind: http-request
+description: Filters employees strictly by department.
+url: "{{baseUrl}}?department=Engineering"
+method: GET
+queryParams:
+  department: Engineering
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("All returned employees belong to Engineering", function () {
+          var jsonData = pm.response.json();
+          jsonData.data.forEach(function(emp) {
+              pm.expect(emp.department).to.eql("Engineering");
+          });
+      });
+    language: text/javascript
+order: 5000

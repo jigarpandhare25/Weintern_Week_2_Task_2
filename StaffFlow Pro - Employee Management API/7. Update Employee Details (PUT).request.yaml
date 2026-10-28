@@ -1,0 +1,29 @@
+$kind: http-request
+description: Updates the role and salary of the previously created employee.
+url: "{{baseUrl}}/{{createdEmployeeId}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "role": "VP of Aerospace Engineering",
+      "salary": 160000,
+      "status": "Active"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Role and Salary updated successfully", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.success).to.eql(true);
+          pm.expect(jsonData.data.role).to.eql("VP of Aerospace Engineering");
+          pm.expect(jsonData.data.salary).to.eql(160000);
+      });
+    language: text/javascript
+order: 7000

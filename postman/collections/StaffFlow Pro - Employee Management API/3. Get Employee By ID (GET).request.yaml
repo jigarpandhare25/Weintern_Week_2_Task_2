@@ -1,0 +1,18 @@
+$kind: http-request
+description: Fetches a single employee using the dynamic ID saved from the POST request.
+url: "{{baseUrl}}/{{createdEmployeeId}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Employee record matches requested ID", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.success).to.eql(true);
+          pm.expect(jsonData.data._id).to.eql(pm.collectionVariables.get("createdEmployeeId"));
+      });
+    language: text/javascript
+order: 3000

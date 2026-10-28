@@ -1,0 +1,7 @@
+$kind: collection
+description: |-
+  Comprehensive REST API test collection for CRUD Employee Management System.
+  Includes automated test assertions, variable chaining, search, sorting, filtering, and validation error scenarios.
+variables:
+  baseUrl: http://localhost:5000/api/employees
+  createdEmployeeId: ""

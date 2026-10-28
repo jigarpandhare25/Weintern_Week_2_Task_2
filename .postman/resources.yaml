@@ -1,0 +1,13 @@
+# Use this workspace to collaborate
+workspace:
+  id: b680a557-fdde-48a7-8598-be8de532c19f
+
+localResources:
+  collections:
+    - ../postman/collections/StaffFlow Pro - Employee Management API
+    - ../StaffFlow Pro - Employee Management API
+
+cloudResources:
+  collections:
+    ../postman/collections/StaffFlow Pro - Employee Management API: c8f9b76e-523e-4fa0-82cb-98e3b4a5d892
+    ../StaffFlow Pro - Employee Management API: c8f9b76e-523e-4fa0-82cb-98e3b4a5d892

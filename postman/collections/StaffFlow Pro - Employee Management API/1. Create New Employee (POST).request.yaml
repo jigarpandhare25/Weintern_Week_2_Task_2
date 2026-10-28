@@ -1,0 +1,36 @@
+$kind: http-request
+description: Creates a new employee record and extracts the generated `_id` into `{{createdEmployeeId}}` for downstream tests.
+url: "{{baseUrl}}"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "name": "Jonathan Archer",
+      "email": "jonathan.archer@enterprise.org",
+      "department": "Engineering",
+      "role": "Lead Propulsion Architect",
+      "salary": 135000,
+      "joinDate": "2024-03-15",
+      "status": "Active"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 201 Created", function () {
+          pm.response.to.have.status(201);
+      });
+
+      pm.test("Employee successfully created with valid ID", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.success).to.eql(true);
+          pm.expect(jsonData.data).to.have.property("_id");
+          pm.expect(jsonData.data.name).to.eql("Jonathan Archer");
+          
+          // Automatically save ID for subsequent GET, PUT, and DELETE tests
+          pm.collectionVariables.set("createdEmployeeId", jsonData.data._id);
+      });
+    language: text/javascript
+order: 1000

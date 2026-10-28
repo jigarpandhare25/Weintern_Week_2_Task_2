@@ -1,0 +1,21 @@
+$kind: http-request
+description: Searches employees across name, role, department, and email.
+url: "{{baseUrl}}?search=Jonathan"
+method: GET
+queryParams:
+  search: Jonathan
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Search results contain Jonathan", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.success).to.eql(true);
+          var found = jsonData.data.some(e => e.name.includes("Jonathan"));
+          pm.expect(found).to.be.true;
+      });
+    language: text/javascript
+order: 4000

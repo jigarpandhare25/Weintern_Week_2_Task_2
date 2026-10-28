@@ -1,0 +1,524 @@
+{
+  "info": {
+    "_postman_id": "c8f9b76e-523e-4fa0-82cb-98e3b4a5d892",
+    "name": "StaffFlow Pro - Employee Management API",
+    "description": "Comprehensive REST API test collection for CRUD Employee Management System.\nFeatures: INR (₹) Currency, Dynamic Department Management, automated test assertions, variable chaining, search, sorting, filtering, and validation error scenarios.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/employees",
+      "type": "string"
+    },
+    {
+      "key": "deptUrl",
+      "value": "http://localhost:5000/api/departments",
+      "type": "string"
+    },
+    {
+      "key": "createdEmployeeId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Get All Departments (GET)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Departments list returned as an array\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.be.true;",
+              "    pm.expect(jsonData.data).to.be.an('array');",
+              "    pm.expect(jsonData.count).to.be.above(0);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{deptUrl}}",
+          "host": [
+            "{{deptUrl}}"
+          ]
+        },
+        "description": "Fetches all active departments available in the system."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Add New Department (POST)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 Created or 400 if already exists\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([201, 400]);",
+              "});",
+              "",
+              "pm.test(\"Department response handled cleanly\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    if (pm.response.code === 201) {",
+              "        pm.expect(jsonData.success).to.be.true;",
+              "        pm.expect(jsonData.data).to.eql(\"Artificial Intelligence\");",
+              "    } else {",
+              "        pm.expect(jsonData.error).to.include(\"already exists\");",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Artificial Intelligence\",\n  \"description\": \"AI, ML, and Deep Learning Research Division\"\n}"
+        },
+        "url": {
+          "raw": "{{deptUrl}}",
+          "host": [
+            "{{deptUrl}}"
+          ]
+        },
+        "description": "Creates a new organizational department dynamically."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Create New Employee - INR (POST)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 Created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test(\"Employee successfully created with valid ID in INR\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.data).to.have.property(\"_id\");",
+              "    pm.expect(jsonData.data.name).to.eql(\"Jonathan Archer\");",
+              "    pm.expect(jsonData.data.salary).to.eql(1450000);",
+              "    ",
+              "    pm.collectionVariables.set(\"createdEmployeeId\", jsonData.data._id);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Jonathan Archer\",\n  \"email\": \"jonathan.archer@enterprise.org\",\n  \"department\": \"Engineering\",\n  \"role\": \"Lead Propulsion Architect\",\n  \"salary\": 1450000,\n  \"joinDate\": \"2024-03-15\",\n  \"status\": \"Active\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}",
+          "host": [
+            "{{baseUrl}}"
+          ]
+        },
+        "description": "Creates a new employee with annual salary in Indian Rupees (₹14,50,000)."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Get All Employees (GET)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response contains employees array\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.data).to.be.an('array');",
+              "    pm.expect(jsonData.count).to.be.above(0);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}",
+          "host": [
+            "{{baseUrl}}"
+          ]
+        },
+        "description": "Fetches the full directory of employees."
+      },
+      "response": []
+    },
+    {
+      "name": "5. Get Employee By ID (GET)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Employee record matches requested ID\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.data._id).to.eql(pm.collectionVariables.get(\"createdEmployeeId\"));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{createdEmployeeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{createdEmployeeId}}"
+          ]
+        },
+        "description": "Fetches a single employee using the dynamic ID saved from the POST request."
+      },
+      "response": []
+    },
+    {
+      "name": "6. Search Employees (GET with query param)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Search results contain Jonathan\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    var found = jsonData.data.some(e => e.name.includes(\"Jonathan\"));",
+              "    pm.expect(found).to.be.true;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}?search=Jonathan",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [
+            {
+              "key": "search",
+              "value": "Jonathan"
+            }
+          ]
+        },
+        "description": "Searches employees across name, role, department, and email."
+      },
+      "response": []
+    },
+    {
+      "name": "7. Filter by Department (GET with department filter)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"All returned employees belong to Engineering\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    jsonData.data.forEach(function(emp) {",
+              "        pm.expect(emp.department).to.eql(\"Engineering\");",
+              "    });",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}?department=Engineering",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [
+            {
+              "key": "department",
+              "value": "Engineering"
+            }
+          ]
+        },
+        "description": "Filters employees strictly by department."
+      },
+      "response": []
+    },
+    {
+      "name": "8. Sort Employees by Salary Descending (GET)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Salaries are sorted in descending order\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    for (var i = 0; i < jsonData.data.length - 1; i++) {",
+              "        pm.expect(jsonData.data[i].salary).to.be.at.least(jsonData.data[i+1].salary);",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}?sortBy=salary&order=desc",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [
+            {
+              "key": "sortBy",
+              "value": "salary"
+            },
+            {
+              "key": "order",
+              "value": "desc"
+            }
+          ]
+        },
+        "description": "Retrieves employees sorted by salary in descending order."
+      },
+      "response": []
+    },
+    {
+      "name": "9. Update Employee Details - INR (PUT)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Role and Salary updated successfully in INR\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.data.role).to.eql(\"VP of Aerospace Engineering\");",
+              "    pm.expect(jsonData.data.salary).to.eql(1800000);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"role\": \"VP of Aerospace Engineering\",\n  \"salary\": 1800000,\n  \"status\": \"Active\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{createdEmployeeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{createdEmployeeId}}"
+          ]
+        },
+        "description": "Updates role and salary to ₹18,00,000 for the created employee."
+      },
+      "response": []
+    },
+    {
+      "name": "10. Get HR Analytics Stats (GET)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Stats contain INR totals and averages\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.data).to.have.property(\"totalEmployees\");",
+              "    pm.expect(jsonData.data).to.have.property(\"totalPayroll\");",
+              "    pm.expect(jsonData.data).to.have.property(\"averageSalary\");",
+              "    pm.expect(jsonData.data.currency).to.eql(\"INR\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/stats/summary",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "stats",
+            "summary"
+          ]
+        },
+        "description": "Retrieves statistical aggregates across all active employees."
+      },
+      "response": []
+    },
+    {
+      "name": "11. Validation Error Test - Bad Request (POST)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400 Bad Request\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test(\"Errors array returned with validation messages\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(false);",
+              "    pm.expect(jsonData.errors).to.be.an('array');",
+              "    pm.expect(jsonData.errors.length).to.be.above(0);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"\",\n  \"department\": \"\",\n  \"salary\": -500\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}",
+          "host": [
+            "{{baseUrl}}"
+          ]
+        },
+        "description": "Validates that the server correctly rejects malformed or incomplete payloads with HTTP 400 Bad Request."
+      },
+      "response": []
+    },
+    {
+      "name": "12. Delete Employee (DELETE)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Employee successfully deleted\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.message).to.eql(\"Employee deleted successfully\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{createdEmployeeId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{createdEmployeeId}}"
+          ]
+        },
+        "description": "Deletes the employee created in Step 3, completing the full CRUD lifecycle."
+      },
+      "response": []
+    }
+  ]
+}

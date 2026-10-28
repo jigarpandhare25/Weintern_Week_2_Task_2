@@ -1,0 +1,20 @@
+$kind: http-request
+description: Retrieves statistical aggregates across all active employees.
+url: "{{baseUrl}}/stats/summary"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Stats contain totalEmployees and totalPayroll", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.success).to.eql(true);
+          pm.expect(jsonData.data).to.have.property("totalEmployees");
+          pm.expect(jsonData.data).to.have.property("totalPayroll");
+          pm.expect(jsonData.data).to.have.property("averageSalary");
+      });
+    language: text/javascript
+order: 8000
